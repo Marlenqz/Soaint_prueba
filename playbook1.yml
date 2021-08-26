@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: "Check if user exists"
+      register: user1_exists
+      raw: getent passwd {{ ansible_user }}
+      ignore_errors: true
+
+    - name: "Change {{ ansible_user }} password"
+      raw: echo -e "my_current_pass\nmy_new_pass\nmy_new_pass" | passwd
+      when: user1_exists|success
